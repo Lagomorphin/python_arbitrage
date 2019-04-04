@@ -1,0 +1,25 @@
+# Byte-compiled / optimized / DLL files
+*.py[cod]
+__pycache__
+*$py.class
+
+# Postgres backup
+*.backup
+
+# Unsaved MS Office file things or something
+~$*.xls[xm]
+~$*.docx
+
+# PyCharm
+.idea/
+
+# Most of the Excel files contain private info
+*.xls[xm]
+
+# Test files also often contain private info (ASINs, etc.)
+test.py
+quicktest.py
+threadtest.py
+
+# Actual credentials file
+credentials.ini
