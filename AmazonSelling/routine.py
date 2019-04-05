@@ -1,6 +1,6 @@
 from Walmart.walmartclasses import WmRoutine, update_wm_data_timestamps
 from Amazon.mwsutils import Products, FulfillmentInventory
-from AmazonSelling.tools import call_sql, union_no_dups, make_SQL_list, con_postgres
+from AmazonSelling.tools import call_sql, union_no_dups, make_sql_list, con_postgres
 from multiprocessing import Process, Pipe, Value, Lock
 from multiprocessing.connection import wait
 from decimal import Decimal
@@ -398,7 +398,7 @@ class RoutineManually(Routine):
         startTs = datetime.datetime.now()
         
         fillQDefs = {theProc: {} for theProc in ('gmpfId', 'gcpfAsin', 'glolfAsin', 'gmfe')}
-        wmIdsSQLList = make_SQL_list(tuple(t[0] for t in self.wmIds), 'int')
+        wmIdsSQLList = make_sql_list(tuple(t[0] for t in self.wmIds), 'int')
     
         #GetMatchingProductsForID
         fillQDefs['gmpfId']['qry'] = self.wmIds

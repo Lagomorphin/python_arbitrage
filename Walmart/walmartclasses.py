@@ -1,17 +1,17 @@
-from multiprocessing import Process
-from operator import itemgetter
-
 import abc
 import datetime
 import json
-import math
 import os
-import psycopg2.extras
 import time
 import uuid
 import xml.etree.ElementTree as ET
+from multiprocessing import Process
+from operator import itemgetter
 
-from AmazonSelling.tools import datetime_floor, call_sql, get_request, record_timestamps, write_to_file,\
+import math
+import psycopg2.extras
+
+from AmazonSelling.tools import datetime_floor, call_sql, get_request, record_timestamps, write_to_file, \
     get_credentials, con_postgres
 
 
@@ -89,7 +89,7 @@ class WmRoutine:
         con = con_postgres()
         overCallLimit = False
         
-        for i in range(0, len(self.subcatsList)):  # loops through all the subcats
+        for i in range(0, len(self.subcatsList)):  # Loops through all the subcats
             
             # Checks WmQueryLog to see if too many calls to the Walmart API have been made in the last 24 hours
             sqlTxt = '''SELECT COALESCE(SUM(num_queries), 0)
@@ -121,9 +121,9 @@ class WmRoutine:
 
 class SearchSubcat:
     """
-    Used to search for all items in a given sub-category. This class records how many total items result from a search query (which is
-    just * for the sub-category) and calculates how many searches are needed to retrieve all items. It keeps track of how many searches
-    have already been performed.
+    Used to search for all items in a given sub-category. This class records how many total items result from a search
+    query (which is just * for the sub-category) and calculates how many searches are needed to retrieve all items. It
+    keeps track of how many searches have already been performed.
     """
     
     def __init__(self, subCat):
