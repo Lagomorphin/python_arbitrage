@@ -75,7 +75,7 @@ def add_items_manually(wmIds):
     calc_column('net')
     calc_column('salesrank')
      
-    print ('Total time elapsed: {}'.format(str(datetime.datetime.now() - a).split('.')[0]))
+    print('Total time elapsed: {}'.format(str(datetime.datetime.now() - a).split('.')[0]))
     
 
 if __name__ == '__main__':
@@ -83,8 +83,3 @@ if __name__ == '__main__':
     crematogaster()
 #     prepare_display1()
 #     add_items_manually([53322425])
-      
-    
-
-        
-

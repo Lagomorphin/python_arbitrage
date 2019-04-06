@@ -1,4 +1,4 @@
-from mwstools.parsers.products.get_my_fees_estimate import GetMyFeesEstimateResponse
+# from mwstools.parsers.products.get_my_fees_estimate import GetMyFeesEstimateResponse
 from AmazonSelling.tools import get_credentials
 from mwstools.mws_overrides import OverrideProducts
 from decimal import Decimal
@@ -12,4 +12,4 @@ estimate_requests = [api.gen_fees_estimate_request(apiKeys['marketplaceID'], x[0
 try:
     response = api.get_my_fees_estimate(estimate_requests)
 except Exception as err:
-    print ("Error with get_my_fees_estimate in the mwstools library:\ninputs:{}\n{}".format(inputs, err))
+    print("Error with get_my_fees_estimate in the mwstools library:\ninputs:{}\n{}".format(inputs, err))

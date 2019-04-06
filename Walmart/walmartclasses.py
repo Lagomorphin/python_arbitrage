@@ -330,10 +330,13 @@ class Search:
         resultLib = get_request(urlStr, 12, 3)
          
         if resultLib['result'] is not None:
-            print("[Path: {}, Query: '{}'], start at {}: {} {}".format(self.subCat, self.qry, self.startIndex, resultLib['numTries'], "try" if resultLib['numTries'] == 1 else "tries"))
+            print("[Path: {}, Query: '{}'], start at {}: {} {}"
+                  .format(self.subCat, self.qry, self.startIndex, resultLib['numTries'],
+                          "try" if resultLib['numTries'] == 1 else "tries"))
             self.resultTxt = resultLib['result'].text            
      
-            with open(os.path.join(os.path.dirname(__file__), 'DataFiles/Search.{}'.format(self.ext)), 'w', encoding="utf-8") as f:
+            with open(os.path.join(os.path.dirname(__file__), 'DataFiles/Search.{}'.format(self.ext)), 'w',
+                      encoding="utf-8") as f:
                 f.write(self.resultTxt)                
                 
 #         with open('H:\\Arbitrage\\Walmart\\DataFiles\\Search.json') as q:
@@ -363,7 +366,8 @@ class Search:
             errVal = 'totalResults_value_is_0'
             
         if errFlag:
-            print("Error code <{}> returned from a search request for subcat '{}', query '{}'".format(errVal, self.subCat, self.qry))
+            print("Error code <{}> returned from a search request for subcat '{}', query '{}'"
+                  .format(errVal, self.subCat, self.qry))
             if self.resultTxt:
                 write_to_file("{}.{}".format(errVal, self.ext), self.resultTxt, dirrr='DataFiles', absPath=False)
             
@@ -476,7 +480,8 @@ class SearchXML(Search):
         theData = []
         if self.root:
             ts = datetime_floor(1.0/60)
-            tagsTupl = ("itemId", "name", "salePrice", "upc", "modelNumber", "brandName", "stock", "availableOnline", "freeShippingOver35Dollars", "clearance")
+            tagsTupl = ("itemId", "name", "salePrice", "upc", "modelNumber", "brandName", "stock", "availableOnline",
+                        "freeShippingOver35Dollars", "clearance")
             
             for w in self.root.findall(".//items/item"):
                 values = dict.fromkeys(tagsTupl)  # Initializes a dictionary with keys from tagsTupl, and all values as None
