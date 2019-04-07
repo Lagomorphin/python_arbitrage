@@ -210,7 +210,9 @@ class SearchSubcat:
                 self.status["errors"].append(errVal)
             
             if errVal in ('4003', 'totalResults_value_is_0'):  # subcategory not found / invalid category id
-                self.totalResults = 0  # This will let the last_searched value in WmTaxo_Updated get updated, so we don't keep checking this subcat every time.
+                # This will let the last_searched value in WmTaxo_Updated get updated, so we don't keep checking this
+                # subcat every time.
+                self.totalResults = 0
             else:
                 self.totalResults = -1
                 
@@ -281,7 +283,9 @@ class SearchQuery:
                 self.status["errors"].append(errVal)
             
             if errVal in ('4003', 'totalResults_value_is_0'):  # subcategory not found / invalid category id
-                self.totalResults = 0  # This will let the last_searched value in WmTaxo_Updated get updated, so we don't keep checking this subcat every time.
+                # This will let the last_searched value in WmTaxo_Updated get updated, so we don't keep checking this
+                # subcat every time.
+                self.totalResults = 0
             else:
                 self.totalResults = -1
                 
@@ -456,7 +460,9 @@ class SearchXML(Search):
         
         try:
             tree = ET.ElementTree(self.errChecked['datums'])
-        except Exception as errFlag:  # Likely lost internet connection <--- This might be a relic from when "self.queryResult.encode('utf-8')" was included in the above line
+        except Exception as errFlag:
+            # Likely lost internet connection <--- This might be a relic from when "self.queryResult.encode('utf-8')"
+            # was included in the above line
             errVal = 'Elementtree_init_failure'
         
         else:
@@ -484,7 +490,7 @@ class SearchXML(Search):
                         "freeShippingOver35Dollars", "clearance")
             
             for w in self.root.findall(".//items/item"):
-                values = dict.fromkeys(tagsTupl)  # Initializes a dictionary with keys from tagsTupl, and all values as None
+                values = dict.fromkeys(tagsTupl)  # Initializes a dict with keys from tagsTupl, and all values as None
                 
                 for y in list(w):  # "list" is an elementree function
                     if y.tag in tagsTupl:
@@ -493,11 +499,28 @@ class SearchXML(Search):
                 # Only add this item if it has a numeric upc
                 values['upc'] = self.check_and_fix_upc(values['upc'], values['itemId'])
                 if values['upc']:
-                    theData.append((ts, values["itemId"], values["name"], values["salePrice"], values["upc"], values["modelNumber"], values["brandName"],
-                                    values["stock"], values["availableOnline"], values["freeShippingOver35Dollars"], values["clearance"],
+                    theData.append((ts,
+                                    values["itemId"],
+                                    values["name"],
+                                    values["salePrice"],
+                                    values["upc"],
+                                    values["modelNumber"],
+                                    values["brandName"],
+                                    values["stock"],
+                                    values["availableOnline"],
+                                    values["freeShippingOver35Dollars"],
+                                    values["clearance"],
                                     # ON CONFLICT DO UPDATE values start here
-                                    ts, values["name"], values["salePrice"], values["upc"], values["modelNumber"], values["brandName"],
-                                    values["stock"], values["availableOnline"], values["freeShippingOver35Dollars"], values["clearance"]))
+                                    ts,
+                                    values["name"],
+                                    values["salePrice"],
+                                    values["upc"],
+                                    values["modelNumber"],
+                                    values["brandName"],
+                                    values["stock"],
+                                    values["availableOnline"],
+                                    values["freeShippingOver35Dollars"],
+                                    values["clearance"]))
                     
         return theData
     
@@ -532,8 +555,10 @@ class SearchJSON(Search):
         theData = []        
         if self.theJson['items']:
             ts = datetime_floor(1.0/60)
-            preConflictTags = ("itemId", "name", "salePrice", "upc", "modelNumber", "brandName", "stock", "availableOnline", "freeShippingOver35Dollars", "clearance")
-            postConflictTags = ("name", "salePrice", "upc", "modelNumber", "brandName", "stock", "availableOnline", "freeShippingOver35Dollars", "clearance")
+            preConflictTags = ("itemId", "name", "salePrice", "upc", "modelNumber", "brandName", "stock",
+                               "availableOnline", "freeShippingOver35Dollars", "clearance")
+            postConflictTags = ("name", "salePrice", "upc", "modelNumber", "brandName", "stock", "availableOnline",
+                                "freeShippingOver35Dollars", "clearance")
             jsonItems = self.theJson['items']
             
             for i in jsonItems:
@@ -588,7 +613,7 @@ class Lookup:
         for i in range(0, math.ceil(len(wmIdsTupl) / 20)):
             queryResult = self.lookup(wmIdsTupl[20 * i:min(len(wmIdsTupl), 20 * (i + 1))])
             
-            theJson = xml_json_err_check(queryResult, 'json')  # This will also write the error to file, if there is an error
+            theJson = xml_json_err_check(queryResult, 'json')  # This will also write err to file, if there is an err
             if not theJson['isErr']:
                 self.json_to_sql(theJson['datums'])
     
@@ -596,17 +621,19 @@ class Lookup:
         # Returns a list of dicts of the parsed API data for the given wm_ids
         # <smallWmIdsTupl> is a tuple of wm_ids with no more than 20 elements
         
-        urlStr = 'http://api.walmartlabs.com/v1/items?ids={}&apiKey={}&format=json'.format(','.join(str(w) for w in smallWmIdsTupl), self.apiKey)
+        urlStr = 'http://api.walmartlabs.com/v1/items?ids={}&apiKey={}&format=json'\
+                 .format(','.join(str(w) for w in smallWmIdsTupl), self.apiKey)
         resultLib = get_request(urlStr, 15, 3)
          
         if resultLib['result'] is not None:
-            print('Product Lookup - {} wm_ids: {} {}'.format(len(smallWmIdsTupl), resultLib['numTries'], 'try' if resultLib['numTries'] == 1 else 'tries'))
+            print('Product Lookup - {} wm_ids: {} {}'
+                  .format(len(smallWmIdsTupl), resultLib['numTries'], 'try' if resultLib['numTries'] == 1 else 'tries'))
             queryResult = resultLib['result'].text
             
             write_to_file('product_lookup.json', queryResult, dirrr='DataFiles', absPath=False)
          
         else:  
-            print("Request result returned None for the following input for walmartclasses.Lookup.lookup:")
+            print('Request result returned None for the following input for walmartclasses.Lookup.lookup:')
             print(smallWmIdsTupl)
             
         return queryResult
@@ -616,8 +643,10 @@ class Lookup:
         
         jsonItems = theJson['items']
         theData = []
-        preConflictTags = ("itemId", "name", "salePrice", "upc", "modelNumber", "brandName", "stock", "availableOnline", "freeShippingOver35Dollars", "clearance")
-        postConflictTags = ("name", "salePrice", "upc", "modelNumber", "brandName", "stock", "availableOnline", "freeShippingOver35Dollars", "clearance")
+        preConflictTags = ("itemId", "name", "salePrice", "upc", "modelNumber", "brandName", "stock", "availableOnline",
+                           "freeShippingOver35Dollars", "clearance")
+        postConflictTags = ("name", "salePrice", "upc", "modelNumber", "brandName", "stock", "availableOnline",
+                            "freeShippingOver35Dollars", "clearance")
         ts = datetime_floor(1.0/60)
         
         for i in jsonItems:            
@@ -698,9 +727,20 @@ class Taxo:
                             subCat_id = int(subCat.find("id").text.split('_')[2])
                             subCat_name = subCat.find("name").text
                             
-                            theData.append([full_id, dept_id, dept_name, cat_id, cat_name, subCat_id, subCat_name, updateuuid, datetime.date.today(),
+                            theData.append([full_id,
+                                            dept_id,
+                                            dept_name,
+                                            cat_id,
+                                            cat_name,
+                                            subCat_id,
+                                            subCat_name,
+                                            updateuuid,
+                                            datetime.date.today(),
                                             # ON CONFLICT DO UPDATE values start here
-                                            dept_name, cat_name, subCat_name, updateuuid])
+                                            dept_name,
+                                            cat_name,
+                                            subCat_name,
+                                            updateuuid])
                             
         sqlTxt = '''INSERT INTO "WmTaxo_Updated" (full_id, dept_id, dept_name, cat_id, cat_name, subcat_id, subcat_name, update_uuid, birthdate)
                     VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)
@@ -765,8 +805,9 @@ def wm_db_query(items):
                 go = True   
                 isList = True      
     
-    if go:    
-        dict_cur = con.cursor(cursor_factory=psycopg2.extras.RealDictCursor)  # SELECT requests using this returns a list of dicts, with columns names as the keys
+    if go:
+        # SELECT requests using this returns a list of dicts, with columns names as the keys
+        dict_cur = con.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
         
         sqlTxt = '''SELECT wm_id, name, price, upc, model, brand, in_stock, free_ship FROM "Prod_Wm" '''    
         
@@ -786,7 +827,8 @@ def wm_db_query(items):
     if not wmDicts or not items:
         print("----------")
         if not wmDicts:  # No matches for the input wm_ids were found
-            print("Error: walmartclasses.wm_db_query didn't find any matches for its wm_ids, which were: {}".format(items))
+            print("Error: walmartclasses.wm_db_query didn't find any matches for its wm_ids, which were: {}"
+                  .format(items))
         if not items:  # No input wm_ids were given
             print("Error: walmartclasses.wm_db_query wasn't given any wm_ids in its parameters")
         print("----------")
@@ -796,7 +838,8 @@ def wm_db_query(items):
             wmDictsIds = [a["wm_id"] for a in wmDicts]
             wmDictsOnly = list(set(wmDictsIds) - set(items))  # wm_ids that are in in wmDicts, but not items
             itemsOnly = list(set(items) - set(wmDictsIds))  # wm_ids that are in items, but not wmDicts
-            print("Error: walmartclasses.wm_db_query either returned extra wm_ids, or didn't find a match for each wm_id fed to it.")
+            print("Error: walmartclasses.wm_db_query either returned extra wm_ids, or didn't find a match for each "
+                  "wm_id fed to it.")
             print("Extra wm_ids returned: {}".format(wmDictsOnly))
             print("wm_ids that were fed but didn't find a match: {}".format(itemsOnly))
             print("----------")
@@ -901,8 +944,9 @@ def xml_json_err_check(apiStr, xmlOrJson):
     <apiStr> is the xml or json code as a string. <xmlOrJson> flags whether the <apiStr> value is xml or json
     Returns a dict which contains a flag for whether the <apiStr> tripped an error or not, as well as the data itself
     """
-    
-    # dt = str(datetime_floor(1.0/600)).replace(":", "-").replace("0000", "") #Super pro way of truncating some of the microsecond decimals off
+
+    # Super pro way of truncating some of the microsecond decimals off
+    # dt = str(datetime_floor(1.0/600)).replace(":", "-").replace("0000", "")
     
     if apiStr is None:
         return {'isErr': True, 'datums': 'no_data_returned_from_api'}
