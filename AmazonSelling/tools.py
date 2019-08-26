@@ -12,8 +12,8 @@ import configparser
 
 def get_request(url, theTimeout, retries):
     """
-    returns a library containing the result of the query and the number of required attemps
-    'result' entry of returned library is None if all attemps failed
+    returns a library containing the result of the query and the number of required attempts
+    'result' entry of returned library is None if all attempts failed
     If theTimeout is -1, timeout will start at 1 sec and increase by 1 every time the request fails
     http://stackoverflow.com/questions/21371809/cleanly-setting-max-retries-on-python-requests-get-or-post-method?rq=1
     """
@@ -52,7 +52,7 @@ def get_credentials(defs=None, rType=dict):
     """
 
     conf = configparser.ConfigParser()
-    conf.read(os.path.join(os.getcwd(), '..', 'credentials.ini'))
+    conf.read(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'credentials.ini'))
 
     if not defs:  # Return a dict of dicts containing the entire contents of the config file, even if <rType> is 'tuple'
         return {sect: {opt: conf.get(sect, opt) for opt in conf.options(sect)} for sect in conf.sections()}
