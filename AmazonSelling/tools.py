@@ -52,7 +52,7 @@ def get_credentials(defs=None, rType=dict):
     """
 
     conf = configparser.ConfigParser()
-    conf.read(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'credentials.ini'))
+    conf.read(os.path.join(os.path.dirname(os.path.abspath(__file__)), os.path.pardir, 'credentials.ini'))
 
     if not defs:  # Return a dict of dicts containing the entire contents of the config file, even if <rType> is 'tuple'
         return {sect: {opt: conf.get(sect, opt) for opt in conf.options(sect)} for sect in conf.sections()}
